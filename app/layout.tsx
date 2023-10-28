@@ -39,11 +39,9 @@ export default function RootLayout({
 				)}
 			>
 				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-					<div className="relative flex flex-col h-screen w-screen justify-center items-center">
-						<main className="container flex-grow w-full h-full flex justify-center items-center">
+						<main className="flex-grow w-screen h-screen flex justify-center items-center">
 							{children}
 						</main>
-          </div>
 				</Providers>
 			</body>
 		</html>
