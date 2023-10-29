@@ -17,8 +17,15 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
 } from "@nextui-org/react";
 import {IoVideocamOff} from "react-icons/io5";
+import { useAsyncList } from "@react-stately/data";
 
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
@@ -136,7 +143,18 @@ export default function Home() {
 
   setInterval(predictWebcam, 10);
 
+  let tableResults = useAsyncList({
+    async load({ signal }) {
+      let res = await fetch("https://swapi.py4e.com/api/people/?search", {
+        signal,
+      });
+      let json = await res.json();
 
+      return {
+        items: json.results,256
+      };
+    },
+  });
 
 
   return (
@@ -164,17 +182,14 @@ export default function Home() {
             ref={canvasRef}
             className="absolute z-10 top-0 left-0 w-full h-full object-cover"
           />
-          {
-            isCameraOn ? null : (
-                        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+          {isCameraOn ? null : (
+            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
               <div className="flex flex-col justify-center items-center">
                 <IoVideocamOff className="text-9xl text-white" />
                 <p className="text-white text-4xl font-bold">Camera is off</p>
               </div>
             </div>
-            )
-          }
-
+          )}
         </div>
 
         {/* Video / Data Controls */}
@@ -211,7 +226,25 @@ export default function Home() {
           </h1>
         </div>
       </div>
-      <div className="flex flex-1 border-t border-default-400 border-opacity-20"></div>
+      <div className="flex flex-1 border-t border-default-400 border-opacity-20">
+        <Table aria-label="Example static collection table" removeWrapper>
+          <TableHeader>
+            <TableColumn>NAME</TableColumn>
+            <TableColumn>ROLE</TableColumn>
+            <TableColumn>STATUS</TableColumn>
+          </TableHeader>
+          <TableBody>
+            {
+
+              <TableRow key="1">
+                <TableCell>Tony Reichert</TableCell>
+                <TableCell>CEO</TableCell>
+                <TableCell>Active</TableCell>
+              </TableRow>
+            }
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
