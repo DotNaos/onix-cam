@@ -1,9 +1,6 @@
 // page.tsx
 "use client";
-
-import { drawConnectors, drawLandmarks, drawRectangle } from "@mediapipe/drawing_utils";
-import { HAND_CONNECTIONS } from "@mediapipe/hands";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import  Webcam  from "react-webcam";
 import {
   Chip,
@@ -23,139 +20,16 @@ import {
   TableColumn,
   TableRow,
   TableCell,
+  Spinner,
+  getKeyValue,
 } from "@nextui-org/react";
 import {IoVideocamOff} from "react-icons/io5";
 import { useAsyncList } from "@react-stately/data";
+import LandmarkTable from "@/components/LandmarkTable";
 
 export default function Home() {
-  const webcamRef = useRef<Webcam>(null);
+  const webcamRef = useRef<Webcam | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  const [isCameraOn, setIsCameraOn] = useState(false);
-
-  useEffect(() => {
-    getVideo();
-  }, [webcamRef]);
-
-  const getVideo = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: { facingMode: "user" } })
-      .then((stream) => {
-        let video = webcamRef.current;
-        if (video) {
-          // @ts-ignore
-          video.srcObject = stream;
-          // @ts-ignore
-          // video.play();
-          console.log(video);
-          setIsCameraOn(true);
-        }
-      })
-      .catch((err) => {
-        console.error("error:", err);
-      });
-  };
-
-  let handLandmarker: any = undefined;
-
-  const CreateHandLandmarker = async () => {
-      useEffect(() => {
-        const initVision = async () => {
-          const { FilesetResolver, HandLandmarker } = await import(
-            "@mediapipe/tasks-vision"
-          );
-          const vision = await FilesetResolver.forVisionTasks(
-            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
-          );
-          // Add logic with `term`
-          handLandmarker = await HandLandmarker.createFromOptions(vision, {
-            baseOptions: {
-              modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
-              delegate: "GPU",
-            },
-            runningMode: "VIDEO",
-            numHands: 2,
-          });
-        };
-        initVision();
-      }, []);
-
-
-
-
-  };
-
-  CreateHandLandmarker();
-
-  let lastVideoTime = -1;
-  let results: any = undefined;
-
-  async function predictWebcam() {
-    if (handLandmarker == null || typeof handLandmarker == "undefined") return;
-
-    if (
-      typeof webcamRef.current == "undefined" ||
-      webcamRef.current == null ||
-      webcamRef.current.video!.readyState !== 4
-    )
-      return;
-
-    if (canvasRef.current == null || typeof canvasRef.current == "undefined")
-      return;
-
-    const canvasElement = canvasRef.current;
-    const canvasCtx = canvasElement?.getContext("2d");
-
-    const video = webcamRef.current.video;
-
-    // console.log(video)
-
-    // console.log(canvasCtx);
-    canvasElement.width = video!.videoWidth;
-    canvasElement.height = video!.videoHeight;
-
-    let startTimeMs = performance.now();
-    if (lastVideoTime !== video!.currentTime) {
-      lastVideoTime = video!.currentTime;
-      results = handLandmarker.detectForVideo(video, startTimeMs);
-    }
-
-    if (results == null || typeof results == "undefined") return;
-
-    canvasCtx!.save();
-    canvasCtx!.clearRect(0, 0, canvasElement!.width, canvasElement!.height);
-    if (results!.landmarks) {
-      for (const landmarks of results!.landmarks) {
-        drawConnectors(canvasCtx!, landmarks, HAND_CONNECTIONS, {
-          color: "#FFFFFF",
-          lineWidth: 2,
-        });
-        drawLandmarks(canvasCtx!, landmarks, {
-          color: "#4FF2BF",
-          lineWidth: 1,
-        });
-      }
-    }
-    canvasCtx!.restore();
-
-    // console.log(results);
-  }
-
-  setInterval(predictWebcam, 10);
-
-  let tableResults = useAsyncList({
-    async load({ signal }) {
-      let res = await fetch("https://swapi.py4e.com/api/people/?search", {
-        signal,
-      });
-      let json = await res.json();
-
-      return {
-        items: json.results,256
-      };
-    },
-  });
-
 
   return (
     // @ts-ignore
@@ -182,18 +56,16 @@ export default function Home() {
             ref={canvasRef}
             className="absolute z-10 top-0 left-0 w-full h-full object-cover"
           />
-          {isCameraOn ? null : (
             <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
               <div className="flex flex-col justify-center items-center">
                 <IoVideocamOff className="text-9xl text-white" />
                 <p className="text-white text-4xl font-bold">Camera is off</p>
               </div>
             </div>
-          )}
         </div>
 
         {/* Video / Data Controls */}
-        <div className="flex flex-col h-full  flex-[2] p-5 gap-5">
+        <div className="sm:flex flex-col h-full  flex-[2] p-5 gap-5 hidden">
           <h1>
             <span className="text-4xl font-bold">Connection</span>
           </h1>
@@ -227,23 +99,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-1 border-t border-default-400 border-opacity-20">
-        <Table aria-label="Example static collection table" removeWrapper>
-          <TableHeader>
-            <TableColumn>NAME</TableColumn>
-            <TableColumn>ROLE</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-          </TableHeader>
-          <TableBody>
-            {
-
-              <TableRow key="1">
-                <TableCell>Tony Reichert</TableCell>
-                <TableCell>CEO</TableCell>
-                <TableCell>Active</TableCell>
-              </TableRow>
-            }
-          </TableBody>
-        </Table>
+        <LandmarkTable data={result}   />
       </div>
     </div>
   );
