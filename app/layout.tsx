@@ -30,20 +30,23 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
-			<head />
-			<body
-				className={clsx(
-					"min-h-screen bg-background font-sans antialiased",
-					fontSans.variable
-				)}
-			>
-				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-						<main className="flex-grow w-screen h-screen flex justify-center items-center">
-							{children}
-						</main>
-				</Providers>
-			</body>
-		</html>
-	);
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        className={clsx(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+          <div className="w-screen h-screen">
+            <Navbar />
+            <main className="h-full w-full">
+              {children}
+            </main>
+          </div>
+        </Providers>
+      </body>
+    </html>
+  );
 }

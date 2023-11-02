@@ -28,21 +28,15 @@ import {
 } from "@/components/icons";
 
 import { Logo } from "@/components/icons";
+import { Controls } from "./controls";
 
 export const Navbar = () => {
-
-
-
 	return (
-		<NextUINavbar maxWidth="xl" position="sticky">
-			<NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-				<NavbarBrand as="li" className="gap-3 max-w-fit">
-					<NextLink className="flex justify-start items-center gap-1" href="/">
-						<Logo />
-						<p className="font-bold text-inherit">ACME</p>
-					</NextLink>
-				</NavbarBrand>
-			</NavbarContent>
+		<NextUINavbar maxWidth="full" isBlurred isBordered className="bg-default bg-opacity-5 absolute">
+			<NavbarMenuToggle />
+			<NavbarMenu className="bg-opacity-5 px-16 py-10">
+				<Controls/>
+			</NavbarMenu>
 		</NextUINavbar>
 	);
 };

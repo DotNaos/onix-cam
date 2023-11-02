@@ -1,107 +1,110 @@
-// page.tsx
 "use client";
-import { useRef, useState } from "react";
-import  Webcam  from "react-webcam";
-import {
-  Chip,
-  Divider,
-  Image,
-  Input,
-  Spacer,
-  CheckboxGroup,
-  Checkbox,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-  Spinner,
-  getKeyValue,
-} from "@nextui-org/react";
-import {IoVideocamOff} from "react-icons/io5";
-import { useAsyncList } from "@react-stately/data";
+import { Controls } from "./../components/controls";
+import { Dispatch, useEffect, useRef, useState } from "react";
+import Webcam from "react-webcam";
+import { IoVideocamOff } from "react-icons/io5";
+import { Detector } from "@/utils/detector";
 import LandmarkTable from "@/components/LandmarkTable";
+import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
+import { Button } from "@nextui-org/button";
+import { motion } from "framer-motion";
+import {IoChevronUp } from "react-icons/io5";
 
 export default function Home() {
-  const webcamRef = useRef<Webcam | null>(null);
+  const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [showData, setShowData] = useState(false);
+
+  useEffect(() => {
+    getVideo();
+  }, [webcamRef]);
+
+  const getVideo = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: { facingMode: "user" } })
+      .then((stream) => {
+        let video = webcamRef.current;
+        if (video) {
+          // @ts-ignore
+          video.srcObject = stream;
+          // @ts-ignore
+          // video.play();
+          console.log(video);
+          setIsCameraOn(true);
+        }
+      })
+      .catch((err) => {
+        console.error("error:", err);
+      });
+  };
+
+  let resState: HandLandmarkerResult = Detector({ webcamRef, canvasRef });
 
   return (
     // @ts-ignore
-    <div className="w-screen h-screen flex flex-col ">
+    <div className="relative w-full h-full flex flex-col overflow-hidden">
       {/* Background image */}
-      <div className="-z bg-red-gradient w-screen h-screen absolute rotate-180 opacity-50"></div>
-      <div className="-z bg-blue-gradient w-screen h-screen absolute opacity-50"></div>
+      <div className="z-6 bg-red-gradient w-full h-full absolute rotate-180 opacity-50"></div>
+      <div className="z-6 bg-blue-gradient w-full h-full absolute opacity-50"></div>
 
-      <div className="flex flex-[2]">
-        {/* Video Source */}
-        <div className="flex-[5] bg-opacity-50 backdrop-blur-2xl z-10 relative  overflow-hidden border-r border-default-400 border-opacity-20">
-          <Webcam
-            audio={false}
-            width={1920}
-            height={1080}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            videoConstraints={{
-              facingMode: "user",
+      {/* Video Source */}
+      <div className="relative flex-[2] bg-opacity-50 backdrop-blur-2xl z-10 w-full">
+        <Webcam
+          audio={false}
+          width={1920}
+          height={1080}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          videoConstraints={{
+            facingMode: "user",
+          }}
+          className="absolute top-0 left-0 w-full h-full object-cover"
+        />
+        <canvas
+          ref={canvasRef}
+          className="absolute z-10 top-0 left-0 w-full h-full object-cover"
+        />
+
+        {isCameraOn ? null : (
+          <motion.div
+            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{
+              duration: 2,
+              ease: "easeInOut",
+              repeat: Infinity,
             }}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-          />
-          <canvas
-            ref={canvasRef}
-            className="absolute z-10 top-0 left-0 w-full h-full object-cover"
-          />
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-              <div className="flex flex-col justify-center items-center">
-                <IoVideocamOff className="text-9xl text-white" />
-                <p className="text-white text-4xl font-bold">Camera is off</p>
-              </div>
-            </div>
-        </div>
-
-        {/* Video / Data Controls */}
-        <div className="sm:flex flex-col h-full  flex-[2] p-5 gap-5 hidden">
-          <h1>
-            <span className="text-4xl font-bold">Connection</span>
-          </h1>
-
-          <Card isBlurred className="outline-1 outline outline-default-200/50">
-            <CardBody className="flex justify-between items-center flex-row gap-5">
-              <Chip className="px-3" variant="faded" color="success">
-                Raspi IP
-              </Chip>
-
-              <Input
-                type="number"
-                defaultValue=""
-                className=""
-                variant="faded"
-              />
-            </CardBody>
-          </Card>
-          <Card isBlurred className="outline-1 outline outline-default-200/50">
-            <CardBody className="flex justify-between items-center flex-row gap-5">
-              <CheckboxGroup label="Send Values">
-                <Checkbox value="Hand">Hand</Checkbox>
-                <Checkbox value="Landmarks">Landmarks</Checkbox>
-                <Checkbox value="Debug">Debug</Checkbox>
-              </CheckboxGroup>
-            </CardBody>
-          </Card>
-          <h1>
-            <span className="text-4xl font-bold">Video</span>
-          </h1>
-        </div>
+            className="absolute top-0 left-0 w-full h-full flex justify-center items-center"
+          >
+            <IoVideocamOff className="text-9xl text-white" />
+          </motion.div>
+        )}
       </div>
-      <div className="flex flex-1 border-t border-default-400 border-opacity-20">
-        <LandmarkTable data={result}   />
-      </div>
+
+      <motion.div
+        className={" flex flex-col items-center w-full max-h-1/3 mb-5 bottom-0"}
+        animate={{ height: showData ? "auto" : "full" }}
+      >
+        <Button
+          variant="flat"
+          radius="full"
+          color={!showData ? "danger" : "success"}
+          aria-label="Show Data"
+          onPress={() => {
+            setShowData(!showData);
+          }}
+          isIconOnly
+        >
+          {" "}
+          <IoChevronUp />
+        </Button>
+
+        {/* Table with Landmarks */}
+        {showData ? (
+          <LandmarkTable aria-label="Show Data" data={resState} />
+        ) : null}
+      </motion.div>
     </div>
   );
 }
-
