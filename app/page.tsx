@@ -1,4 +1,5 @@
 "use client";
+import { LandmarkInfo } from "./../components/LandmarkInfo";
 import { Controls } from "./../components/controls";
 import { Dispatch, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
@@ -8,14 +9,20 @@ import LandmarkTable from "@/components/LandmarkTable";
 import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
 import { Button } from "@nextui-org/button";
 import { motion } from "framer-motion";
-import {IoChevronUp } from "react-icons/io5";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
 
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [showData, setShowData] = useState(false);
 
   useEffect(() => {
     getVideo();
@@ -50,7 +57,7 @@ export default function Home() {
       <div className="z-6 bg-blue-gradient w-full h-full absolute opacity-50"></div>
 
       {/* Video Source */}
-      <div className="relative flex-[2] bg-opacity-50 backdrop-blur-2xl z-10 w-full">
+      <div className="relative h-full bg-opacity-50 backdrop-blur-2xl z-10 w-full">
         <Webcam
           audio={false}
           width={1920}
@@ -82,29 +89,7 @@ export default function Home() {
         )}
       </div>
 
-      <motion.div
-        className={" flex flex-col items-center w-full max-h-1/3 mb-5 bottom-0"}
-        animate={{ height: showData ? "auto" : "full" }}
-      >
-        <Button
-          variant="flat"
-          radius="full"
-          color={!showData ? "danger" : "success"}
-          aria-label="Show Data"
-          onPress={() => {
-            setShowData(!showData);
-          }}
-          isIconOnly
-        >
-          {" "}
-          <IoChevronUp />
-        </Button>
-
-        {/* Table with Landmarks */}
-        {showData ? (
-          <LandmarkTable aria-label="Show Data" data={resState} />
-        ) : null}
-      </motion.div>
+      <LandmarkInfo resState={resState}  />
     </div>
   );
 }
