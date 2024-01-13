@@ -18,6 +18,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 
+
 export default function Home() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -48,6 +49,9 @@ export default function Home() {
   };
 
   let resState: HandLandmarkerResult = Detector({ webcamRef, canvasRef });
+
+
+
 
   return (
     // @ts-ignore
