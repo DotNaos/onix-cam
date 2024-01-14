@@ -1,4 +1,4 @@
-import {nextui} from '@nextui-org/theme'
+import { nextui } from "@nextui-org/theme";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -17,5 +17,22 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        light: {
+          // ...
+          colors: {},
+        },
+        dark: {
+          // ...
+          colors: {
+            // primary: "#DEDCFF",
+
+          },
+        },
+        // ... custom themes
+      },
+    }),
+  ],
 };

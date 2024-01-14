@@ -34,7 +34,7 @@ export const Navbar = () => {
 	return (
 		<NextUINavbar maxWidth="full" isBlurred isBordered className="bg-default bg-opacity-5 absolute">
 			<NavbarMenuToggle />
-			<NavbarMenu className="bg-opacity-5 px-16 py-10">
+			<NavbarMenu className="bg-opacity-5 sm:px-16 py-10">
 				<Controls/>
 			</NavbarMenu>
 		</NextUINavbar>
