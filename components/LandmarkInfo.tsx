@@ -20,9 +20,9 @@ export function LandmarkInfo({ landmarkerRef }: { landmarkerRef: HandLandmarkerR
   return (
     <div className={"absolute h-full w-full bottom-0"}>
       <Button
-        variant="flat"
+        variant="faded"
         radius="full"
-        color={!isOpen ? "danger" : "success"}
+        color="warning"
         aria-label="Show Data"
         onPress={onOpen}
         isIconOnly

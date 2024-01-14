@@ -1,5 +1,5 @@
 import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
-import { Button, Card, CardBody, CardFooter, CardHeader, Input, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
 import LandmarkTable from "./LandmarkTable";
 import { IoCloseCircle, IoLocate } from "react-icons/io5";
 import { useEffect, useState } from "react";
@@ -110,15 +110,16 @@ const ConnectionModal = ({landmarkerRef} : {landmarkerRef : HandLandmarkerResult
       >
         <ModalContent>
           <ModalBody>
-            <Card className="bg-[#1E1E20] p-6">
+            <Card className="bg-[#1E1E20] p-6 bg-transparent">
               <CardHeader
                 title="Connection"
-                className="p-4 flex gap-3 justify-center items-center text-center"
+                className="p-4 flex flex-col gap-3 justify-center items-center text-center"
               >
-                <span className="flex text-xl font-bold">
+                <span className="flex text-2xl font-bold">
                   Set Server Connection
                 </span>
               </CardHeader>
+              <Divider />
               <CardBody className="flex px-4 pt-2 pb-4 gap-3 h-full">
                 <Input
                   label="URL"
@@ -154,9 +155,7 @@ const ConnectionModal = ({landmarkerRef} : {landmarkerRef : HandLandmarkerResult
               <CardFooter className="flex grid-cols-2 px-4 pt-2 pb-4 gap-3 h-full w-full">
                 <Button
                   variant="shadow"
-                  color= {
-                    isConnected? "success" : "danger"
-                  }
+                  color={isConnected ? "success" : "danger"}
                   className=" text-default-50 text-md font-semibold w-full"
                   onClick={() => {
                     connectToServer(url);
