@@ -19,6 +19,7 @@ import {
 } from "@nextui-org/react";
 import { DetectorContext } from "./providers";
 import { Navbar } from "@/components/navbar";
+import ConnectionModal from "@/components/ConnectionModal";
 
 
 export default function Home() {
@@ -57,8 +58,6 @@ export default function Home() {
 
   return (
     <DetectorContext.Provider value={landmarkerRef}>
-      <Navbar/>
-      <main className="h-full w-full">
         <div className="relative w-full h-full flex flex-col overflow-hidden">
           {/* Background image */}
           <div className="z-6 bg-red-gradient w-full h-full absolute rotate-180 opacity-50"></div>
@@ -98,8 +97,8 @@ export default function Home() {
           </div>
 
           <LandmarkInfo landmarkerRef={landmarkerRef} />
+          <ConnectionModal landmarkerRef={landmarkerRef} />
         </div>
-      </main>
     </DetectorContext.Provider>
   );
 }

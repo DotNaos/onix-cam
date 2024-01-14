@@ -40,7 +40,8 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="w-screen h-screen">
-              {children}
+            {/* <Navbar /> */}
+            <main className="h-full w-full">{children}</main>
           </div>
         </Providers>
       </body>

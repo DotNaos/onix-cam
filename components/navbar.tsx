@@ -19,23 +19,14 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-	TwitterIcon,
-	GithubIcon,
-	DiscordIcon,
-	HeartFilledIcon,
-	SearchIcon,
-} from "@/components/icons";
 
-import { Logo } from "@/components/icons";
-import { Controls } from "./controls";
+
 
 export const Navbar = () => {
 	return (
 		<NextUINavbar maxWidth="full" isBlurred isBordered className="bg-default bg-opacity-5 absolute">
 			<NavbarMenuToggle />
 			<NavbarMenu className="bg-opacity-5 sm:px-16 py-10">
-				<Controls/>
 			</NavbarMenu>
 		</NextUINavbar>
 	);

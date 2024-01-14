@@ -16,43 +16,6 @@ import * as net from 'net';
 export function LandmarkInfo({ landmarkerRef }: { landmarkerRef: HandLandmarkerResult }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-let verbindung: WebSocket;
-
-function daten_uebermitteln(daten: HandLandmarkerResult): void {
-    try {
-        const datenString = JSON.stringify(daten);
-
-        // Überprüfen Sie den Status der Verbindung, bevor Sie Daten senden
-        if (verbindung && verbindung.readyState === WebSocket.OPEN) {
-            verbindung.send(datenString);
-            console.log('Daten erfolgreich übermittelt.');
-        } else {
-            console.error('Verbindung ist nicht geöffnet. Daten wurden nicht gesendet.');
-        }
-    } catch (e) {
-        console.error(`Fehler bei der Datenübermittlung: ${e}`);
-    }
-}
-
-
-function verbindung_herstellen(ip_adresse: string, port: number): WebSocket {
-    const verbindung = new WebSocket(`ws://${ip_adresse}:${port}`);
-
-    verbindung.addEventListener('open', () => {
-        console.log('Verbindung hergestellt.');
-
-        // Beispiel-HandLandmarkerResult erstellen
-
-        // Daten übermitteln, nachdem die Verbindung geöffnet ist
-        daten_uebermitteln(landmarkerRef);
-    });
-
-    verbindung.addEventListener('close', () => {
-        console.log('Verbindung geschlossen.');
-    });
-
-    return verbindung;
-}
 
   return (
     <div className={"absolute h-full w-full bottom-0"}>
