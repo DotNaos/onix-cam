@@ -14,8 +14,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { PiPlugsBold, PiPlugsConnectedBold } from "react-icons/pi";
 
 export function Controls() {
-  const [ip_adress, setIpAdress] = React.useState("");
-  const [port, setPort] = React.useState("");
+  const [ip_adress, setIpAdress] = React.useState<string>("");
+  const [port, setPort] = React.useState<string>("");
   const [isConnected, setIsConnected] = React.useState(false);
   const landmarkerRef = useContext(DetectorContext);
   const [socket, setSocket] = useState<WebSocket | null>(null);
