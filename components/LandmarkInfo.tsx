@@ -13,7 +13,7 @@ import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
 import * as net from 'net';
 
 
-export function LandmarkInfo({ resState }: { resState: HandLandmarkerResult }) {
+export function LandmarkInfo({ landmarkerRef }: { landmarkerRef: HandLandmarkerResult }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 let verbindung: WebSocket;
@@ -44,7 +44,7 @@ function verbindung_herstellen(ip_adresse: string, port: number): WebSocket {
         // Beispiel-HandLandmarkerResult erstellen
 
         // Daten übermitteln, nachdem die Verbindung geöffnet ist
-        daten_uebermitteln(resState);
+        daten_uebermitteln(landmarkerRef);
     });
 
     verbindung.addEventListener('close', () => {
@@ -102,7 +102,7 @@ function verbindung_herstellen(ip_adresse: string, port: number): WebSocket {
       >
         <ModalContent>
           <ModalBody>
-            <LandmarkTable aria-label="Show Data" data={resState} />
+            <LandmarkTable aria-label="Show Data" data={landmarkerRef} />
           </ModalBody>
         </ModalContent>
       </Modal>

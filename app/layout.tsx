@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { Providers } from "./providers";
+import { DetectorContext, Providers } from "./providers";
 import { Navbar } from "@/components/navbar";
 import { Link } from "@nextui-org/link";
 import clsx from "clsx";
@@ -40,10 +40,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="w-screen h-screen">
-            <Navbar />
-            <main className="h-full w-full">
               {children}
-            </main>
           </div>
         </Providers>
       </body>
