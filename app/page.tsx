@@ -55,10 +55,6 @@ export default function Home() {
 
   let landmarkerRef: HandLandmarkerResult = Detector({ webcamRef, canvasRef });
 
-  useEffect(() => {
-    console.log("ja")
-  }, [landmarkerRef]);
-
   return (
     <DetectorContext.Provider value={landmarkerRef}>
       <Navbar/>

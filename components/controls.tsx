@@ -41,9 +41,7 @@ export function Controls() {
     }
     try {
 
-      const ws: WebSocket  = new WebSocket(
-        `ws://${ip_address}:${port}`
-      );
+      const ws: WebSocket = new WebSocket(`wss://${ip_address}:${port}`);
 
       ws.onopen = () => {
         console.log("connected to websocket");
