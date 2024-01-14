@@ -19,7 +19,6 @@ import {
 } from "@nextui-org/react";
 import { DetectorContext } from "./providers";
 import { Navbar } from "@/components/navbar";
-const socket = new WebSocket("ws://localhost:8765");
 
 
 export default function Home() {

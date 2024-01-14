@@ -14,13 +14,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { PiPlugsBold, PiPlugsConnectedBold } from "react-icons/pi";
 
 export function Controls() {
-  const [ip_adress, setIpAdress] = React.useState<string>("");
-  const [port, setPort] = React.useState<string>("");
+  const [ip_adress, setIpAdress] = React.useState<string>("127.0.0.1");
+  const [port, setPort] = React.useState<string>("8765");
   const [isConnected, setIsConnected] = React.useState(false);
   const landmarkerRef = useContext(DetectorContext);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  const connectToServer = (ip_address: string, port: string) => {
+  const connectToServer =  async (ip_address: string, port: string) => {
     // validate input
     const ipValid = new RegExp(
       /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
@@ -40,7 +40,10 @@ export function Controls() {
       return;
     }
     try {
-     const ws = new WebSocket(`ws://${ip_address}:${port}`);
+
+      const ws: WebSocket  = new WebSocket(
+        `ws://${ip_address}:${port}`
+      );
 
       ws.onopen = () => {
         console.log("connected to websocket");
@@ -178,3 +181,5 @@ export function Controls() {
     </div>
   );
 }
+
+
