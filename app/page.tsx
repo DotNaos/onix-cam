@@ -1,6 +1,5 @@
 "use client";
 import { LandmarkInfo } from "./../components/LandmarkInfo";
-import { Controls } from "./../components/controls";
 import { Dispatch, useContext, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { IoVideocamOff } from "react-icons/io5";
