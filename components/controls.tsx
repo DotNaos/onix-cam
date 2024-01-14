@@ -14,34 +14,25 @@ import React, { useContext, useEffect, useState } from "react";
 import { PiPlugsBold, PiPlugsConnectedBold } from "react-icons/pi";
 
 export function Controls() {
-  const [ip_adress, setIpAdress] = React.useState<string>("127.0.0.1");
-  const [port, setPort] = React.useState<string>("8765");
+  const [url, setURL] = useState<string>(
+    "wss://summary-amazing-tetra.ngrok-free.app"
+  );
   const [isConnected, setIsConnected] = React.useState(false);
   const landmarkerRef = useContext(DetectorContext);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  const connectToServer =  async (ip_address: string, port: string) => {
+  const connectToServer =  async (url : string) => {
     // validate input
-    const ipValid = new RegExp(
-      /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-    ).test(ip_adress);
+    let link = "";
 
-    const portValid = new RegExp(
-      /^(6553[0-5]|655[0-2]\d|65[0-4]\d\d|6[0-4]\d{3}|[1-5]\d{4}|[1-9]\d{0,3}|0)$/
-    ).test(port);
+    if (url.startsWith('wss://') || url.startsWith('ws://'))
+    link = url;
+    else
+    link = `wss://${url}`;
 
-    if (!ipValid) {
-      alert(`IP-Address invalid: ${ip_adress}`);
-      return;
-    }
-
-    if (!portValid) {
-      alert(`Port invalid: ${port}`);
-      return;
-    }
     try {
 
-      const ws: WebSocket = new WebSocket(`wss://${ip_address}:${port}`);
+      const ws: WebSocket = new WebSocket(link);
 
       ws.onopen = () => {
         console.log("connected to websocket");
@@ -99,7 +90,7 @@ export function Controls() {
                 variant="flat"
                 color={isConnected ? "success" : "danger"}
                 onClick={() => {
-                  connectToServer(ip_adress, port);
+                  connectToServer(url);
                 }}
                 isIconOnly
               >
@@ -111,45 +102,16 @@ export function Controls() {
               </Button>
               <span className="flex text-xl font-bold">Robot</span>
             </CardHeader>
-            <CardBody className="grid px-4 pt-2 pb-4 gap-3 grid-cols-2 h-full">
+            <CardBody className="grid px-4 pt-2 pb-4 gap-3 h-full">
               <Input
-                label="IP-Adresse"
+                label="URL"
                 labelPlacement="outside"
-                value={ip_adress}
+                value={url}
                 onChange={(e) => {
-                  setIpAdress(e.target.value);
+                  setURL(e.target.value);
                 }}
                 placeholder="127.0.0.1"
                 className="h-full"
-                classNames={{
-                  label: "text-[#DEDCFF80] font-bold",
-                  input: [
-                    "bg-transparent",
-                    "text-black/90 dark:text-[#DEDCFF]/90",
-                    "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                  ],
-                  innerWrapper: "bg-transparent",
-                  inputWrapper: [
-                    "shadow-xl",
-                    "bg-[#151516]",
-                    "backdrop-blur-xl",
-                    "backdrop-saturate-200",
-                    "hover:bg-default-200/70",
-                    "dark:hover:bg-default/70",
-                    "group-data-[focused=true]:bg-default-200/50",
-                    "dark:group-data-[focused=true]:bg-default/60",
-                    "!cursor-text",
-                  ],
-                }}
-              />
-              <Input
-                label="Port"
-                labelPlacement="outside"
-                value={port}
-                onChange={(e) => {
-                  setPort(e.target.value);
-                }}
-                placeholder="8765"
                 classNames={{
                   label: "text-[#DEDCFF80] font-bold",
                   input: [
