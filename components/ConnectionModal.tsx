@@ -38,7 +38,7 @@ const ConnectionModal = ({landmarkerRef} : {landmarkerRef : HandLandmarkerResult
       };
 
       ws.onmessage = (event) => {
-        console.log(event.data);
+        // console.log(event.data);
       };
 
       ws.onerror = (err) => {
