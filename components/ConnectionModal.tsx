@@ -2,13 +2,15 @@ import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
 import LandmarkTable from "./LandmarkTable";
 import { IoCloseCircle, IoLocate } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PiPlugsBold, PiPlugsConnectedBold } from "react-icons/pi";
+import { DetectorContext } from "@/app/providers";
 
-const ConnectionModal = ({landmarkerRef} : {landmarkerRef : HandLandmarkerResult}) =>
+const ConnectionModal = () =>
 {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isConnected, setConnected] = useState(false);
+  const results = useContext(DetectorContext);
 
 
   const [url, setURL] = useState<string>(
@@ -53,12 +55,12 @@ const ConnectionModal = ({landmarkerRef} : {landmarkerRef : HandLandmarkerResult
   };
 
   useEffect(() => {
-    const isReady = socket && landmarkerRef && socket.readyState == socket.OPEN;
+    const isReady = socket && results && socket.readyState == socket.OPEN;
     if (isReady) {
-      const data = JSON.stringify(landmarkerRef);
+      const data = JSON.stringify(results);
       socket.send(data);
     }
-  }, [landmarkerRef, socket]);
+  }, [results, socket]);
 
   return (
     <div className={"absolute h-full w-full bottom-0"}>

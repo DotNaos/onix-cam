@@ -9,11 +9,10 @@ import {
 import React from "react";
 import { IoLocate } from "react-icons/io5";
 import LandmarkTable from "./LandmarkTable";
-import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
-import * as net from 'net';
 
 
-export function LandmarkInfo({ landmarkerRef }: { landmarkerRef: HandLandmarkerResult }) {
+
+export function LandmarkInfo() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 
@@ -65,7 +64,7 @@ export function LandmarkInfo({ landmarkerRef }: { landmarkerRef: HandLandmarkerR
       >
         <ModalContent>
           <ModalBody>
-            <LandmarkTable aria-label="Show Data" data={landmarkerRef} />
+            <LandmarkTable aria-label="Show Data"/>
           </ModalBody>
         </ModalContent>
       </Modal>
