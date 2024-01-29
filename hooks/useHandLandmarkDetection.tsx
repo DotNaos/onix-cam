@@ -21,6 +21,10 @@ const useHandLandmarkDetection = ({
 
 
   const CreateHandLandmarker = async () => {
+    // Check Webcam and canvas
+    console.log(webcamRef);
+    console.log(canvasRef);
+
     useEffect(() => {
       const initVision = async () => {
         const { FilesetResolver, HandLandmarker } = await import(
@@ -41,11 +45,12 @@ const useHandLandmarkDetection = ({
       };
       initVision();
     }, []);
+
+    setInterval(predictWebcam, 10);
   };
 
   CreateHandLandmarker();
 
-  setInterval(predictWebcam, 10);
 
   function predictWebcam() {
     if (handLandmarker == null || typeof handLandmarker == "undefined") return;
@@ -96,6 +101,10 @@ const useHandLandmarkDetection = ({
       }
     }
     canvasCtx!.restore();
+
+    if (!results!.landmarks) {
+      return;
+    }
 
     console.log(results);
   }

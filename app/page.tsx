@@ -9,6 +9,7 @@ import ConnectionModal from "@/components/ConnectionModal";
 import useWebcam from "@/hooks/useWebcam";
 import useCanvas from "@/hooks/useCanvas";
 import useHandLandmarkDetection from "@/hooks/useHandLandmarkDetection";
+import { WebcamDetection } from "@/components/WebcamDetection";
 
 
 export default function Home() {
@@ -28,13 +29,15 @@ export default function Home() {
         <div className="z-6 bg-blue-gradient w-full h-full absolute opacity-50"></div>
 
         {/* Video Source */}
-        <div className="relative h-full bg-opacity-50 backdrop-blur-2xl z-10 w-full">
+        {/* <div className="relative h-full bg-opacity-50 backdrop-blur-2xl z-10 w-full">
           {WebcamComponent}
           {CanvasComponent}
-        </div>
+        </div> */}
 
-        <LandmarkInfo />
-        <ConnectionModal />
+        {/* <LandmarkInfo /> */}
+        {/* <ConnectionModal /> */}
+
+        <WebcamDetection />
       </div>
     </DetectorContext.Provider>
   );
