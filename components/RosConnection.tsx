@@ -1,72 +1,79 @@
 import { HandLandmarkerResult } from "@mediapipe/tasks-vision";
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, useDisclosure } from "@nextui-org/react";
-import LandmarkTable from "./LandmarkTable";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  useDisclosure,
+} from "@nextui-org/react";
 import { IoCloseCircle, IoLocate } from "react-icons/io5";
 import { useContext, useEffect, useState } from "react";
 import { PiPlugsBold, PiPlugsConnectedBold } from "react-icons/pi";
 import { DetectorContext } from "@/app/providers";
+import ROSLIB from "roslib";
 
-const ConnectionModal = () =>
-{
+const RosConnection = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isConnected, setConnected] = useState(false);
   const results = useContext(DetectorContext);
 
-  useEffect(() => {
-    console.log(results);
-  }
-  , [results]);
-
-
   const [url, setURL] = useState<string>(
     "wss://summary-amazing-tetra.ngrok-free.app"
   );
-  const [socket, setSocket] = useState<WebSocket | null>(null);
 
 
   const connectToServer = async (url: string) => {
-    // validate input
-    let link = "";
+    const ros = new ROSLIB.Ros({
+      url: url,
+    });
 
-    if (url.startsWith("wss://") || url.startsWith("ws://")) link = url;
-    else link = `wss://${url}`;
-
-    try {
-      const ws: WebSocket = new WebSocket(link);
-
-      ws.onopen = () => {
-        console.log("connected to websocket");
-        setConnected(true);
-      };
-
-      ws.onclose = () => {
-        console.log("disconnected from websocket");
-        setConnected(false);
-        ws.close();
-      };
-
-      ws.onmessage = (event) => {
-        // console.log(event.data);
-      };
-
-      ws.onerror = (err) => {
-        console.log("error:", err);
-      };
-
-      setSocket(ws);
-    } catch (error) {
-      console.log("error:", error);
-      return;
+    ros.on("connection", function () {
+      console.log("Connected to websocket server.");
+      setConnected(true);
     }
+    );
+
+    useEffect(() => {
+      // Send a message to the drone
+      const cmdVel = new ROSLIB.Topic({
+        ros: ros,
+        name: "/cmd_vel",
+        messageType: "geometry_msgs/Twist",
+      });
+
+      const twist = new ROSLIB.Message({
+        linear: {
+          x: 0.1,
+          y: 0.2,
+          z: 0.3,
+        },
+        angular: {
+          x: -0.1,
+          y: -0.2,
+          z: -0.3,
+        },
+      });
+
+      cmdVel.publish(twist);
+
+  }, [results]);
+
+    ros.on("error", function (error) {
+      console.log("Error connecting to websocket server: ", error);
+      setConnected(false);
+    });
+
+    ros.on("close", function () {
+      console.log("Connection to websocket server closed.");
+      setConnected(false);
+    });
   };
-
-  useEffect(() => {
-    const isReady = socket && results && socket.readyState == socket.OPEN;
-    if (isReady) {
-      const data = JSON.stringify(results);
-      socket.send(data);
-    }
-  }, [results, socket]);
 
   return (
     <div className={"absolute h-full w-full bottom-0"}>
@@ -176,7 +183,7 @@ const ConnectionModal = () =>
                   color="warning"
                   className="text-default-50 text-md font-semibold"
                   onClick={() => {
-                    socket?.close();
+                    // socket?.close();
                   }}
                   isIconOnly
                 >
@@ -191,4 +198,4 @@ const ConnectionModal = () =>
   );
 };
 
-export default ConnectionModal;
+export default RosConnection;

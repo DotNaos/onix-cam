@@ -6,17 +6,16 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import React, { Dispatch, useContext, useState } from "react";
+import React, { Dispatch, useContext, useEffect, useState } from "react";
 import {
-  HandLandmarkerResult,
   NormalizedLandmark,
 } from "@mediapipe/tasks-vision";
-import { useAsyncList } from "@react-stately/data";
-import { useInfiniteScroll } from "@nextui-org/use-infinite-scroll";
 import { DetectorContext } from "@/app/providers";
+
 
 export default function LandmarkTable() {
   const results = useContext(DetectorContext);
+
   const detections = results?.landmarks;
 
   if (
@@ -38,14 +37,6 @@ export default function LandmarkTable() {
       },
     ] as NormalizedLandmark[];
   }
-
-  // landmarks.forEach((landmark) => {
-  //   console.log(landmark);
-  // });
-
-  // if(landmarks.length > 0){
-  //   console.log(landmarks[0]);
-  // }
 
   const colums = [
     "Joint",
